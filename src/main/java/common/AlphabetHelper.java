@@ -2,7 +2,11 @@ package common;
 
 import java.util.regex.Pattern;
 
+/**
+ * 正则去匹配，
+ */
 public class AlphabetHelper {
+
 
     static Pattern ptnLetter = Pattern.compile("^[a-zA-Z]$");
     static Pattern ptnNumber = Pattern.compile("^[0-9]$");

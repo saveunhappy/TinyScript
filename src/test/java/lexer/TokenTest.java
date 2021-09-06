@@ -9,7 +9,7 @@ class TokenTest {
 
     void assertToken(Token token,String value,TokenType type){
         assertEquals(type,token.get_type());
-        assertEquals(value,token.get_value());
+        assertEquals(value,token.getValue());
     }
     @Test
     public void test_varOrKeyword() throws Exception{

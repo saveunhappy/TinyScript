@@ -27,7 +27,7 @@ public class PeekIterator<T> implements Iterator<T> {
     //目前理解为就是猫一眼，不会说流用完了就没了
     //因为你peek的时候，还是要调用next方法的，就是往下走，就是调用
     // T val = next();但是你一会儿调用peek的话，还得是原来的啊，那怎么办？存起来，放到stackPutBacks
-    //中去，然后你每次peek，看看stack里面有没有，没有，先putBack，放进去，
+    //中去，然后你每次peek，看看stack里面有没有元素，没有，先putBack，放进去，
     // 有的话都是返回回去，而且，没有调用next，只是get方法，
     // 那你下次真正调用next，就得和这次peek的值一样了吧，那个值，其实已经弹出来了，但是弹到了stack里面，
     //所以你next的时候，就看看stackPutBacks里面有没有，有的话就弹出来，那绝对是你peek的时候putBack
