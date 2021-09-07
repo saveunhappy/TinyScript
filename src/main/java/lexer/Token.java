@@ -30,10 +30,6 @@ public class Token {
                 _type == TokenType.STRING || _type == TokenType.FLOAT;
     }
 
-    public TokenType get_type() {
-        return _type;
-    }
-
     public void set_type(TokenType _type) {
         this._type = _type;
     }

@@ -81,7 +81,6 @@ public class Lexer {
 
             if (AlphabetHelper.isLetter(c)) {
                 it.putBack();
-                ;
                 tokens.add(Token.makeVarOrKeyword(it));
                 continue;
             }

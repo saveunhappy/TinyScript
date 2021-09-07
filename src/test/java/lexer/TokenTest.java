@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TokenTest {
 
     void assertToken(Token token,String value,TokenType type){
-        assertEquals(type,token.get_type());
+        assertEquals(type,token.getType());
         assertEquals(value,token.getValue());
     }
     @Test

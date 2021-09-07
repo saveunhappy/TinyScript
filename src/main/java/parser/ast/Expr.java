@@ -1,7 +1,7 @@
-package parser;
+package parser.ast;
 
 public class Expr extends ASTNode{
-    Expr(ASTNode _parent) {
+    public Expr(ASTNode _parent) {
         super(_parent);
     }
 }
