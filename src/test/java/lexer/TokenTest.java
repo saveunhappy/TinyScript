@@ -3,6 +3,10 @@ package lexer;
 import common.PeekIterator;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TokenTest {
@@ -74,6 +78,14 @@ class TokenTest {
             var splitValue = test.split("[* ]+");
             assertToken(token,splitValue[0], test.contains(".") ?TokenType.FLOAT:TokenType.INTEGER);
         }
+    }
+
+    @Test
+    public void test_deleteComment() throws LexicalException {
+        var source = "/*123123123\n123123123*/a=1";
+        var lexer = new Lexer();
+        var tokens = lexer.analyse(source.chars().mapToObj(x -> (char)x));
+        assertEquals(3, tokens.size());
     }
 
 }
