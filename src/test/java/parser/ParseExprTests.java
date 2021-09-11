@@ -28,15 +28,15 @@ public class ParseExprTests {
 
     @Test
     public void complex() throws LexicalException, ParseException {
-        var expr1 = createExpr("1+2*3");
-        var expr2 = createExpr("1*2+3");
-        var expr3 = createExpr("10 * (7 + 4)");
-        var expr4 = createExpr("(1*2!=7)==3!=4*5+6");
+//        var expr1 = createExpr("1+2*3");
+//        var expr2 = createExpr("1*2+3");
+       var expr3 = createExpr("10 * (7 + 4)");
+//        var expr4 = createExpr("(1*2!=7)==3!=4*5+6");
 
-        assertEquals("1 2 3 * +", ParserUtils.toPostfixExpression(expr1));
-        assertEquals("1 2 * 3 +", ParserUtils.toPostfixExpression(expr2));
-        assertEquals("10 7 4 + *", ParserUtils.toPostfixExpression(expr3));
-        assertEquals("1 2 * 7 != 3 4 5 * 6 + != ==", ParserUtils.toPostfixExpression(expr4));
+//        assertEquals("1 2 3 * +", ParserUtils.toPostfixExpression(expr1));
+//        assertEquals("1 2 * 3 +", ParserUtils.toPostfixExpression(expr2));
+       assertEquals("10 7 4 + *", ParserUtils.toPostfixExpression(expr3));
+ //       assertEquals("1 2 * 7 != 3 4 5 * 6 + != ==", ParserUtils.toPostfixExpression(expr4));
         // i++ ++i
     }
 
