@@ -1,7 +1,26 @@
 package parser.ast;
 
+import parser.util.ParseException;
+import parser.util.PeekTokenIterator;
+
 public class AssignStmt extends Stmt{
-    public AssignStmt(ASTNode _parent, ASTNodeTypes _type, String _label) {
-        super(_parent, ASTNodeTypes.ASSIGN_STMT, "assign");
+
+    public AssignStmt() {
+        super(ASTNodeTypes.ASSIGN_STMT, "assign");
+    }
+    public static ASTNode parse(PeekTokenIterator it) throws ParseException {
+        var stmt = new AssignStmt();
+        var tkn = it.peek();
+        var factor = Factor.parse(it);
+        if(factor == null) {
+            throw new ParseException(tkn);
+        }
+        stmt.addChild(factor);
+        var lexeme = it.nextMatch("=");
+        var expr = Expr.parse(it);
+        stmt.addChild(expr);
+        stmt.setLexeme(lexeme);
+        return stmt;
+
     }
 }

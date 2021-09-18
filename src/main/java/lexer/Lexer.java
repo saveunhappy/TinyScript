@@ -3,22 +3,13 @@ package lexer;
 import common.AlphabetHelper;
 import common.PeekIterator;
 
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
 public class Lexer {
-    /**
-     * 这个就是一个综合的了，提取字符串的，操作数的，数字的，每个方法都能获取到完整的流，一直解析到不属于自己的
-     * 然后return出去，添加到list中去，然后字符串再从上一次解析完的个地方继续往下流，因为你不知道下一个是谁解析的，
-     * 所以你一直要putBack，如果不是自己能解析了的，也不至于流失了字符，然后，+ - .那里，你得看一看，+5,3*-3.5
-     * 如果当前流的前面是一个操作符，后面是一个数字，那就不能简单的解析成字符了，否则*是操作数，-也是一个操作数，
-     * 所以这里要额外处理一下，那你怎么能判断呢，还需要lookahead，往后多看一个字符，如果你当前是 + - .可以往
-     * 后面看看是不是数字，具体的，再不懂，debug看
-     *
-     * @param it
-     * @return
-     * @throws LexicalException
-     */
+
     public ArrayList<Token> analyse(PeekIterator<Character> it) throws LexicalException {
         var tokens = new ArrayList<Token>();
 
@@ -93,7 +84,7 @@ public class Lexer {
             }
 
             // + - .
-            // 3+5,+5,3*-5,3*3.5
+            // 3+5,+5,3*-5,3*3.5 ,
             /*
              *这里需要额外判断一下，就是这三个和数字组合开，因为你如果不额外判断，+5就分开了，程序就会认为
              * +是操作数，5是数字，3*-5的话，*是操作数没毛病，因为没有*-这个操作数，不像++ += 但是-5还是要
@@ -105,8 +96,8 @@ public class Lexer {
             if ((c == '+' || c == '-' || c == '.') && AlphabetHelper.isNumber(lookahead)) {
                 //因为你得看你这个操作数
                 var lastToken = tokens.size() == 0 ? null : tokens.get(tokens.size() - 1);
-
-                if (lastToken == null || !lastToken.isNumber() || lastToken.isOperator()) {
+                //如果是n-1呢？那就不能用isNumber了，得用isValue，踩坑了。
+                if (lastToken == null || !lastToken.isValue() || lastToken.isOperator()) {
                     it.putBack();
                     tokens.add(Token.makeNumber(it));
                     continue;
@@ -127,6 +118,62 @@ public class Lexer {
     public ArrayList<Token> analyse(Stream source) throws LexicalException {
         var it = new PeekIterator<Character>(source, (char) 0);
         return this.analyse(it);
+    }
+    /**
+     * 从源代码文件加载并解析
+     * @param src
+     * @return
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     * @throws LexicalException
+     */
+    public static ArrayList<Token> fromFile(String src) throws FileNotFoundException, UnsupportedEncodingException, LexicalException {
+        var file = new File(src);
+        var fileStream = new FileInputStream(file);
+        var inputStreamReader = new InputStreamReader(fileStream, "UTF-8");
+
+        var br = new BufferedReader(inputStreamReader);
+
+
+        /**
+         * 利用BufferedReader每次读取一行
+         */
+        var it = new Iterator<Character>() {
+            private String line = null;
+            private int cursor = 0;
+
+            private void readLine() throws IOException {
+                if(line == null || cursor == line.length()) {
+                    line = br.readLine();
+                    cursor = 0;
+                }
+            }
+            @Override
+            public boolean hasNext() {
+                try {
+                    readLine();
+                    return line != null;
+                } catch (IOException e) {
+                    return false;
+                }
+            }
+
+            @Override
+            public Character next() {
+                try {
+                    readLine();
+                    return line != null ? line.charAt(cursor++) :null;
+                } catch (IOException e) {
+                    return null;
+                }
+            }
+        };
+
+        var peekIt = new PeekIterator<Character>(it, '\0');
+
+        var lexer = new Lexer();
+        return lexer.analyse(peekIt);
+
     }
 
 }

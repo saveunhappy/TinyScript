@@ -1,9 +1,6 @@
 package parser;
 
-import parser.ast.ASTNode;
-import parser.ast.ASTNodeTypes;
-import parser.ast.Expr;
-import parser.ast.Scalar;
+import parser.ast.*;
 import parser.util.ParseException;
 import parser.util.PeekTokenIterator;
 
@@ -20,10 +17,10 @@ public class SimpleParser {
      */
     public static ASTNode parse(PeekTokenIterator it) throws ParseException {
         //每个表达式都是独立的，都是默认没有父节点
-        var expr = new Expr(null);
+        var expr = new Expr();
+        var scalar = Factor.parse(it);
         //这里就看成1+2，expr就是+,然后一直往下流，scalar就是左右节点，
         // 当然，直到最后，返回回去的时候，才能拿到两边都是数字，就是!it.hasNext()这行代码。
-        var scalar = new Scalar(expr, it);
         //base condition
         if (!it.hasNext()) {
             return scalar;

@@ -5,11 +5,16 @@ import java.util.HashSet;
 
 public class Keywords {
     static String[] keywords = {
-        "var",
-        "if",
-        "else",
-        "for",
-        "while",
+            "var",
+            "int",
+            "float",
+            "bool",
+            "void",
+            "string",
+            "if",
+            "else",
+            "for",
+            "while",
             "break",
             "func",
             "return"

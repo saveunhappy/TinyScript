@@ -14,15 +14,20 @@ public class PeekIterator<T> implements Iterator<T> {
     //endToken算是一个flag，看看是不是结束了，
     private T _endToken = null;
 
-    public PeekIterator(Stream<T> stream) {
+    public PeekIterator(Stream<T> stream){
         it = stream.iterator();
     }
 
-    public PeekIterator(Stream<T> stream, T endToken) {
+    public PeekIterator(Iterator<T> _it, T endToke) {
+        this.it = _it;
+        this._endToken = endToke;
+    }
+
+
+    public PeekIterator(Stream<T> stream, T endToken){
         it = stream.iterator();
         _endToken = endToken;
     }
-
 
     //目前理解为就是猫一眼，不会说流用完了就没了
     //因为你peek的时候，还是要调用next方法的，就是往下走，就是调用
