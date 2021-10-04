@@ -33,7 +33,6 @@ public class Lexer {
                     while (true) {
                         if (!it.hasNext() || (c = it.next()) == '\n') break;
                     }
-                    ;
                     continue;
                 } else if (lookahead == '*') {
                     /*多行注释
