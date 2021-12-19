@@ -1,12 +1,10 @@
-package translator;
+package translator.symbol;
 
 import lexer.Token;
 import lexer.TokenType;
 import org.apache.commons.lang3.NotImplementedException;
 import parser.ast.*;
 import parser.util.ParseException;
-import translator.symbol.Symbol;
-import translator.symbol.SymbolTable;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package translator;
+package translator.symbol;
 
 import parser.ast.ASTNode;
 

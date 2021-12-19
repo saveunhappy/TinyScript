@@ -3,13 +3,13 @@ package parser.ast;
 import parser.util.ParseException;
 import parser.util.PeekTokenIterator;
 
-public class IfStmt extends Stmt{
+public class IfStmt extends Stmt {
     public IfStmt() {
         super(ASTNodeTypes.IF_STMT, "if");
     }
 
     public static ASTNode parse(PeekTokenIterator it) throws ParseException {
-        return parseIF( it);
+        return parseIF(it);
     }
 
     // IfStmt -> If(Expr) Block Tail
@@ -19,15 +19,15 @@ public class IfStmt extends Stmt{
         var ifStmt = new IfStmt();
         ifStmt.setLexeme(lexeme);
         //根据一元表达式或者是一个数字，返回成一个表达式
-        var expr = Expr.parse( it);
+        var expr = Expr.parse(it);
         ifStmt.addChild(expr);
         //这就代表if里面的boolean结束了，看看语句块
         it.nextMatch(")");
-        var block = Block.parse( it);
+        var block = Block.parse(it);
         ifStmt.addChild(block);
 
         var tail = parseTail(it);
-        if(tail != null) {
+        if (tail != null) {
             ifStmt.addChild(tail);
         }
         return ifStmt;
@@ -36,15 +36,15 @@ public class IfStmt extends Stmt{
 
     // Tail -> else {Block} | else IFStmt | ε
     public static ASTNode parseTail(PeekTokenIterator it) throws ParseException {
-        if(!it.hasNext() || !it.peek().getValue().equals("else")) {
+        if (!it.hasNext() || !it.peek().getValue().equals("else")) {
             return null;
         }
         it.nextMatch("else");
         var lookahead = it.peek();
 
-        if(lookahead.getValue().equals("{")) {
+        if (lookahead.getValue().equals("{")) {
             return Block.parse(it);
-        } else if(lookahead.getValue().equals("if")){
+        } else if (lookahead.getValue().equals("if")) {
             return parseIF(it);
         } else {
             return null;
@@ -56,22 +56,22 @@ public class IfStmt extends Stmt{
         return this.getChild(0);
     }
 
-    public ASTNode getBlock(){
+    public ASTNode getBlock() {
         return this.getChild(1);
     }
 
-    public ASTNode getElseBlock(){
+    public ASTNode getElseBlock() {
 
         var block = this.getChild(2);
-        if(block instanceof Block) {
+        if (block instanceof Block) {
             return block;
         }
         return null;
     }
 
-    public ASTNode getElseIfStmt(){
+    public ASTNode getElseIfStmt() {
         var ifStmt = this.getChild(2);
-        if(ifStmt instanceof IfStmt) {
+        if (ifStmt instanceof IfStmt) {
             return ifStmt;
         }
         return null;

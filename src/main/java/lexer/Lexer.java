@@ -31,7 +31,7 @@ public class Lexer {
                     //到这里就是注释一行里面的东西都不解析，如果没有下一个了，
                     // 或者读到了换行符，读到换行符，那就不是注释了，可以跳出去了
                     while (true) {
-                        if (!it.hasNext() || (c = it.next()) == '\n') break;
+                        if (!it.hasNext() || it.next() == '\n') break;
                     }
                     continue;
                 } else if (lookahead == '*') {

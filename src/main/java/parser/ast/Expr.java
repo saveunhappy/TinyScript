@@ -6,6 +6,8 @@ import parser.util.ParseException;
 import parser.util.PeekTokenIterator;
 import parser.util.PriorityTable;
 
+import java.util.Objects;
+
 public class Expr extends ASTNode {
 
     private static PriorityTable table = new PriorityTable();
@@ -67,9 +69,9 @@ public class Expr extends ASTNode {
             //会一直往下走，这里是E(),下面还有一个E_()呢，一直往下走呢，如果A和B都不是空，就能组成一个
             //表达式了，这个可能就是最终combine的结果，把A和B组合在一起。
             //E(k) -> E(k+1) E_(k)
-            return combine( it,
+            return combine(it,
                     () -> E(k + 1, it),
-                    () -> E_( k, it));
+                    () -> E_(k, it));
         } else {
             //一直递归的k+1,超过了索引就不适用了，就得到这个里面，这个就是到最深处了，是数字。1-9
             //或者说是一元表达式
@@ -77,9 +79,9 @@ public class Expr extends ASTNode {
 
             return race(
                     it,
-                    () -> combine( it, () -> U( it), () -> E_( k, it)),
+                    () -> combine(it, () -> U(it), () -> E_(k, it)),
 
-                    () -> combine( it, () -> F( it), () -> E_( k, it))
+                    () -> combine(it, () -> F(it), () -> E_(k, it))
             );
         }
     }
@@ -87,20 +89,21 @@ public class Expr extends ASTNode {
     private static ASTNode E_(int k, PeekTokenIterator it) throws ParseException {
         var token = it.peek();
         var value = token.getValue();
-       // E_(k) = op(k) E(k+1) E_(k) | ε,因为op有了，所以执行下面的啊，E(k+1),_E(k) != <= >= 这个是从那里面取到的，nextMatch得符合
+        // E_(k) = op(k) E(k+1) E_(k) | ε,因为op有了，所以执行下面的啊，E(k+1),_E(k) != <= >= 这个是从那里面取到的，nextMatch得符合
         //就是看你这里面有没有操作符了，没有就返回null。
         if (table.get(k).contains(value)) {
-            Expr expr = new Expr( ASTNodeTypes.BINARY_EXPR, it.nextMatch(value));
+            Expr expr = new Expr(ASTNodeTypes.BINARY_EXPR, it.nextMatch(value));
             //到这里，又开始递归了，因为E_(k) = op(k) E(k+1) E_(k)
             //如果有child的话，再去递归的查看，E(k+1) E_(k)就是这俩的合并
-            expr.addChild(combine( it,
-                    () -> E( k + 1, it),
-                    () -> E_( k, it)
-            ));
+            expr.addChild(Objects.requireNonNull(combine(it,
+                    () -> E(k + 1, it),
+                    () -> E_(k, it)
+            )));
             return expr;
         }
         return null;
     }
+
     /**
      * E(k) = E(k) op(k) E(k+1) | E(k+1)
      * E(t) = E(t) op(t) Factor | Factor    这个Factor就再带入一下，E(t)
@@ -118,7 +121,7 @@ public class Expr extends ASTNode {
             // 就会返回一个BRACKET，也是ASTNode类型的然后调用next的时候去stackPutBack中
             //找到这个)，那么就匹配成功了
             //
-            var expr = E( 0, it);
+            var expr = E(0, it);
             //这个上面那个expr又去递归了，然后经过一系列的，返回一个expr,因为解析到1 * 2 是a
             // 还有 !=7 是b，已经是一个表达式了，那这里刚开始是一个(，这里就得要求下一个是右括号。
             it.nextMatch(")");
@@ -127,12 +130,13 @@ public class Expr extends ASTNode {
             //这里知道你是一元操作符了，先peek一下，然后，得消费掉啊，那就调用nextMatch
             var t = it.peek();
             it.nextMatch(value);
-            Expr unaryExpr = new Expr( ASTNodeTypes.UNARY_EXPR, t);
-            unaryExpr.addChild(E( 0, it));
+            Expr unaryExpr = new Expr(ASTNodeTypes.UNARY_EXPR, t);
+            unaryExpr.addChild(E(0, it));
             return unaryExpr;
         }
         return null;
     }
+
     /**
      * E(k) = E(k) op(k) E(k+1) | E(k+1)
      * E(t) = E(t) op(t) Factor | Factor    这个Factor就再带入一下，E(t)
@@ -145,11 +149,11 @@ public class Expr extends ASTNode {
     private static ASTNode F(PeekTokenIterator it) throws ParseException {
         //Factor,就是数字，到这的，不是变量就是数字
         var factor = Factor.parse(it);
-        if(factor == null) {
+        if (factor == null) {
             return null;
         }
-        if(it.hasNext() && it.peek().getValue().equals("(")) {
-            return CallExpr.parse(factor,it);
+        if (it.hasNext() && it.peek().getValue().equals("(")) {
+            return CallExpr.parse(factor, it);
         }
         return factor;
     }
@@ -163,20 +167,25 @@ public class Expr extends ASTNode {
         //这个其实也是个递推式，就是看看两个返回谁，a是空返回b，b是空返回a，因为是递归的，说不定
         //哪个方法就出栈了，一直递归
         var a = aFunc.hoc();
-        if(a == null) {
+        if (a == null) {
             return it.hasNext() ? bFunc.hoc() : null;
         }
         var b = it.hasNext() ? bFunc.hoc() : null;
-        if(b == null) {
+        if (b == null) {
             return a;
         }
 
         //创建表达式
-        Expr expr = new Expr( ASTNodeTypes.BINARY_EXPR, b.lexeme);
+        Expr expr = new Expr(ASTNodeTypes.BINARY_EXPR, b.lexeme);
         //E(k)
         expr.addChild(a);
         //为什么这里是b的child？因为b是E_就是能一直递归的，这里就在E_()添加过一次，获取当然也是从0获取
-
+        /*
+         expr.addChild(Objects.requireNonNull(combine(it,
+                    () -> E(k + 1, it),
+                    () -> E_(k, it)
+            )));
+         */
         expr.addChild(b.getChild(0));
         return expr;
     }

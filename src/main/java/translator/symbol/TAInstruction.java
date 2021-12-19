@@ -1,7 +1,6 @@
-package translator;
+package translator.symbol;
 
 import org.apache.commons.lang3.NotImplementedException;
-import translator.symbol.Symbol;
 
 public class TAInstruction {
 

@@ -1,9 +1,6 @@
-package translator;
+package translator.symbol;
 
 import org.apache.commons.lang3.StringUtils;
-import translator.symbol.StaticSymbolTable;
-import translator.symbol.SymbolTable;
-import translator.symbol.SymbolType;
 
 import java.util.ArrayList;
 
