@@ -54,8 +54,16 @@ public class Token {
         //注意，提取，如果解析到空格，空格肯定不是数字，字母下划线，就跳出循环了啊，然后就去那个set里面去
         //进行比对，看看有没有，有就是关键字了，如果接着想往下呢？这里已经进去了，那就再调用一下next,
         //然后重新调用这个方法，就是从abc那里开始了，不符合，就是变量
+        /*
+        *  2022-12-2复习
+        *  这其实是一个状态机，因为变量可以是aaa  paso, 之类的，所以你要去一个字符一个字符的去累加，
+        *  String s = "";就是定义一个开始的，进行拼接的，所有的数字啊之类的和String进行拼接就会变成一个String
+        * while (it.hasNext()) 这个没啥好说的，就是一直往下走
+        * var lookahead = it.peek();就是一直往下走，碰到不属于自己的，就退出了。
+        */
         String s = "";
         while (it.hasNext()) {
+
             var lookahead = it.peek();
             if (AlphabetHelper.isLiteral(lookahead)) {
                 s += lookahead;
