@@ -9,6 +9,7 @@ class PeekIteratorTest {
     @Test
     public void testPeek() throws Exception{
         var source  = "abcdefg";
+        //mapToObj,c->是要映射成一个Obj的，然后强转成一个字符了。
         var it = new PeekIterator<>(source.chars().mapToObj(c -> (char) c));
 
         assertEquals('a',it.next());

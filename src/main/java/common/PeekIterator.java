@@ -55,7 +55,8 @@ public class PeekIterator<T> implements Iterator<T> {
     public void putBack() {
         if (this.queueCache.size() > 0) {
             //这个push就是栈，你看底层，addFirst,
-            //后面的add,底层是linkLast,就是往最后加的，
+            //后面的add,底层是linkLast,就是往最后加的，pollLast，就是把最后那个弹出来，
+            // 所以比如queue中一直next，就是1 2 3 4 5,然后调用的putback，就是 queue: 1 2 3 4 。stackPutBacks:5
             this.stackPutBacks.push(this.queueCache.pollLast());
         }
     }

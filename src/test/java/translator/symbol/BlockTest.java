@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 import parser.Parser;
 import parser.util.ParseException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BlockTest {
@@ -25,7 +29,8 @@ public class BlockTest {
         var translator = new Translator();
 
         var program = translator.translate(ast);
-
+        List<Integer> integers = new ArrayList<>();
+        Collections.max(integers);
 
         assertEquals("a = 1\n" +
                 "p1 = a * 100\n" +
@@ -34,10 +39,11 @@ public class BlockTest {
                 "b = p1", program.toString());
 
 
-
     }
 
-
+    public static Integer getMax(List<Integer> values) {
+        return Collections.max(values);
+    }
 
 
 }
