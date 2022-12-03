@@ -38,13 +38,18 @@ public class Lexer {
                     /*多行注释
                      *
                      */
-                    it.next();//多读一个* 避免/*/通过，
+                    it.next();
+                    /*
+                    * 2022 12 - 2 程序走到这里，里面的东西肯定都是要不执行的，所以你上面调用it.next，也无所谓
+                    * 但是这里的目的就是多读一个* 避免/*/
+                    //多读一个* 避免/*/通过，
                     // 看下面，当前p是*，但是peek一下，看看后面的，这里必须是同时成立才可以，
                     //这个方法，估计是把源代码全部都得扫一遍
                     boolean valid = false;
                     while (it.hasNext()) {
                         char p = it.next();
                         if (p == '*' && it.peek() == '/') {
+                            /*这里peek了，所以要调用next给消费掉*/
                             it.next();
                             valid = true;
                             break;
@@ -63,6 +68,10 @@ public class Lexer {
             }
 
             if (c == '"' || c == '\'') {
+                /*碰到字符串了，所以先把字符串的标志，双引号或者单引号放回去，以确保子程序
+                * 能在调用next()方法的时候把字符串的标志从stack中拿到好解析
+                * 然后这个流还在继续，就跟流水线一样。
+                * */
                 //这里putBack就是要交给子程序去使用，这个putBack是缓存中和栈中一直在动，不影响这个正常的流
                 it.putBack();
                 tokens.add(Token.makeString(it));

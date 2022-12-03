@@ -14,6 +14,13 @@ class SimpleParserTest {
 
     @Test
     void parse() throws LexicalException, ParseException {
+
+        /*
+        *  2022-12-03 解析过程就是这样的。
+        * 1 + (2 + 3 + 4)
+        * 2 + (3 + 4)
+        * 3 + 4
+        */
         var source = "1+2+3+4".chars().mapToObj(x->(char)x);
         var lexer = new Lexer();
         //lexer.analyse(source).stream()这里返回的是一个ArrayList<Token>，
